@@ -380,18 +380,17 @@ namespace GksKatowiceBot
                             message.Conversation = new ConversationAccount(id: conversationId.Id);
                             message.AttachmentLayout = AttachmentLayoutTypes.Carousel;
                             List<IGrouping<string, string>> hrefList = new List<IGrouping<string, string>>();
-                            message.Text = @"Cześć
-Jestem BOTem, Twoim asystentem do kontaktu ze stronami internetowymi klubu Skra Bełchatów. Raz dziennie powiadomię Cię o aktualnościach w poszczególnych sekcjach sportowych. Ponadto spodziewaj się powiadomień w formie komunikatów, bądź innych informacji przekazywanych przez moderatora.   
+                            message.Text = @"Cześć " + userAccount.Name.Substring(0, userAccount.Name.IndexOf(" ")) + @", jestem BOTem, Twoim asystentem do kontaktu ze stronami internetowymi klubu Skra Bełchatów. Raz dziennie powiadomię Cię o aktualnościach w poszczególnych sekcjach sportowych. Ponadto spodziewaj się powiadomień w formie komunikatów, bądź innych informacji przekazywanych przez administratora dotyczących szczególnie ważnych dla kibiców wydarzeń.   
 ";
                             // message.Attachments = GetCardsAttachments(ref hrefList, true);
 
                             await connector.Conversations.SendToConversationAsync((Activity)message);
 
-                            message.Text = @"Współpraca między nami jest bardzo prosta.Wydajesz mi polecenia, a ja za Ciebie wykonuje robotę.
-Zaznacz tylko w rozwijanym menu lub skorzystaj z podpowiedzi, która sekcja cię interesuje, a ja automatycznie połączę Cię z aktualnościami z wybranej sekcji.
-";
+//                            message.Text = @"Współpraca między nami jest bardzo prosta.Wydajesz mi polecenia, a ja za Ciebie wykonuje robotę.
+//Zaznacz tylko w rozwijanym menu lub skorzystaj z podpowiedzi, która sekcja cię interesuje, a ja automatycznie połączę Cię z aktualnościami z wybranej sekcji.
+//";
 
-                            await connector.Conversations.SendToConversationAsync((Activity)message);
+//                            await connector.Conversations.SendToConversationAsync((Activity)message);
                         }
                         else
                                     if (activity.Text == "DEVELOPER_DEFINED_PAYLOAD_HELP")
@@ -463,18 +462,17 @@ Zaznacz tylko w rozwijanym menu lub skorzystaj z podpowiedzi, która sekcja cię
                             message.Conversation = new ConversationAccount(id: conversationId.Id);
                             message.AttachmentLayout = AttachmentLayoutTypes.Carousel;
                             List<IGrouping<string, string>> hrefList = new List<IGrouping<string, string>>();
-                            message.Text = @"Cześć
-Jestem BOTem, Twoim asystentem do kontaktu ze stronami internetowymi klubu Skra Bełchatów. Raz dziennie powiadomię Cię o aktualnościach w poszczególnych sekcjach sportowych. Ponadto spodziewaj się powiadomień w formie komunikatów, bądź innych informacji przekazywanych przez moderatora.   
+                            message.Text = @"Cześć "+userAccount.Name.Substring(0,userAccount.Name.IndexOf(" "))+ @", jestem BOTem, Twoim asystentem do kontaktu ze stronami internetowymi klubu Skra Bełchatów. Raz dziennie powiadomię Cię o aktualnościach w poszczególnych sekcjach sportowych. Ponadto spodziewaj się powiadomień w formie komunikatów, bądź innych informacji przekazywanych przez administratora dotyczących szczególnie ważnych dla kibiców wydarzeń.   
 ";
                             // message.Attachments = GetCardsAttachments(ref hrefList, true);
 
                             await connector.Conversations.SendToConversationAsync((Activity)message);
 
-                            message.Text = @"Współpraca między nami jest bardzo prosta.Wydajesz mi polecenia, a ja za Ciebie wykonuje robotę.
-Zaznacz tylko w rozwijanym menu lub skorzystaj z podpowiedzi, która sekcja cię interesuje, a ja automatycznie połączę Cię z aktualnościami z wybranej sekcji.
-";
+//                            message.Text = @"Współpraca między nami jest bardzo prosta.Wydajesz mi polecenia, a ja za Ciebie wykonuje robotę.
+//Zaznacz tylko w rozwijanym menu lub skorzystaj z podpowiedzi, która sekcja cię interesuje, a ja automatycznie połączę Cię z aktualnościami z wybranej sekcji.
+//";
 
-                            await connector.Conversations.SendToConversationAsync((Activity)message);
+//                            await connector.Conversations.SendToConversationAsync((Activity)message);
                         }
                      
                         else
@@ -596,29 +594,47 @@ Zaznacz tylko w rozwijanym menu lub skorzystaj z podpowiedzi, która sekcja cię
                     message.ChannelData = JObject.FromObject(new
                     {
                         notification_type = "REGULAR",
+                        //buttons = new dynamic[]
+                        // {
+                        //     new
+                        //     {
+                        //    type ="postback",
+                        //    title="Tytul",
+                        //    vslue = "tytul",
+                        //    payload="DEVELOPER_DEFINED_PAYLOAD"
+                        //     }
+                        // },
                         quick_replies = new dynamic[]
-                            {
-                               new
-                        {
+  {
+                                //new
+                                //{
+                                //    content_type = "text",
+                                //    title = "Aktualności",
+                                //    payload = "DEFINED_PAYLOAD_FOR_PICKING_BLUE",
+                                //    image_url = "https://cdn3.iconfinder.com/data/icons/developperss/PNG/Blue%20Ball.png"
+                                //},
+                                new
+                                {
                                     content_type = "text",
-                                    title = "Piłka nożna",
-                                    payload = "DEVELOPER_DEFINED_PAYLOAD_Pilka_Nozna",
-                                  //  image_url = "https://cdn3.iconfinder.com/data/icons/developperss/PNG/Green%20Ball.png"
+                                    title = "Aktualności",
+                                    payload = "DEVELOPER_DEFINED_PAYLOAD_Aktualnosci",
+                                    //     image_url = "https://cdn3.iconfinder.com/data/icons/developperss/PNG/Green%20Ball.png"
+                                   // image_url = "http://archiwum.koluszki.pl/zdjecia/naglowki_nowe/listopad%202013/pi%C5%82ka[1].png"
                                 },
                                 new
-                        {
+                                {
                                     content_type = "text",
-                                    title = "Siatkówka",
-                                    payload = "DEVELOPER_DEFINED_PAYLOAD_Siatkowka",
-                                   // image_url = "https://cdn3.iconfinder.com/data/icons/developperss/PNG/Blue%20Ball.png"
+                                    title = "Galeria",
+                                    payload = "DEVELOPER_DEFINED_PAYLOAD_Galeria",
+                           //         image_url = "https://gim7bytom.edupage.org/global/pics/iconspro/sport/volleyball.png"
                                 },                                new
-                        {
+                                {
                                     content_type = "text",
-                                    title = "Hokej",
-                                    payload = "DEVELOPER_DEFINED_PAYLOAD_Hokej",
-                                   // image_url = "https://cdn3.iconfinder.com/data/icons/developperss/PNG/Green%20Ball.png"
+                                    title = "Video",
+                                    payload = "DEVELOPER_DEFINED_PAYLOAD_Video",
+                                //       image_url = "https://cdn3.iconfinder.com/data/icons/developperss/PNG/Green%20Ball.png"
                                 },
-                                                           }
+                                 }
                     });
 
                     message.AttachmentLayout = null;

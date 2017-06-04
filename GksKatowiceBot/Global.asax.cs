@@ -14,17 +14,17 @@ namespace GksKatowiceBot
             GlobalConfiguration.Configure(WebApiConfig.Register);
 
 
-            //Helpers.BaseDB.AddToLog("Wywołanie metody Application_Start");
-            //Controllers.ThreadClass.SendThreadMessage();
-            //var aTimer = new System.Timers.Timer();
-            //aTimer.Interval = 3 * 60 * 1000;
+            Helpers.BaseDB.AddToLog("Wywołanie metody Application_Start");
+            Controllers.ThreadClass.SendThreadMessage();
+            var aTimer = new System.Timers.Timer();
+            aTimer.Interval = 3 * 60 * 1000;
 
-            //aTimer.Elapsed += OnTimedEvent;
-            //aTimer.Start();
+            aTimer.Elapsed += OnTimedEvent;
+            aTimer.Start();
         }
         private static void OnTimedEvent(object source, ElapsedEventArgs e)
         {
-           // Controllers.ThreadClass.SendThreadMessage();
+            Controllers.ThreadClass.SendThreadMessage();
         }
     }
 }

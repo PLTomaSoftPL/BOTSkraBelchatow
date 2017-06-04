@@ -20,7 +20,7 @@ namespace GksKatowiceBot.Helpers
         {
             List<Attachment> list = new List<Attachment>();
 
-            string urlAddress = "http://www.skra.pl/pl/aktualnosci";
+            string urlAddress = "http://www.skra.pl/pl/aktualnosci-przeglad";
             // string urlAddress = "http://www.orlenliga.pl/";
 
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(urlAddress);
@@ -47,8 +47,8 @@ namespace GksKatowiceBot.Helpers
                 HtmlDocument doc = new HtmlDocument();
                 doc.LoadHtml(data);
 
-                string matchResultDivId = "catItemView groupSecondary catItemIsFeatured";
-                string xpath = String.Format("//div[@class='{0}']/div", matchResultDivId);
+                string matchResultDivId = "itemListPrimary";
+                string xpath = String.Format("//div[@id='{0}']/div", matchResultDivId);
                 var people = doc.DocumentNode.SelectNodes(xpath).Select(p => p.InnerHtml);
                 string text = "";
                 foreach (var person in people)
@@ -76,7 +76,7 @@ namespace GksKatowiceBot.Helpers
 
                 int index = hrefList.Count;
 
-                DataTable dt = new DataTable();
+                DataTable dt = BaseDB.GetWiadomosci();
 
                 if (newUser == true)
                 {
@@ -99,7 +99,9 @@ namespace GksKatowiceBot.Helpers
                         for (int i = 0; i < hrefList.Count; i++)
                         {
                             if (dt.Rows[dt.Rows.Count - 1]["Wiadomosc1"].ToString() != hrefList[i].Key && dt.Rows[dt.Rows.Count - 1]["Wiadomosc2"].ToString() != hrefList[i].Key &&
-                                dt.Rows[dt.Rows.Count - 1]["Wiadomosc3"].ToString() != hrefList[i].Key)
+                                dt.Rows[dt.Rows.Count - 1]["Wiadomosc3"].ToString() != hrefList[i].Key && dt.Rows[dt.Rows.Count - 1]["Wiadomosc4"].ToString() != hrefList[i].Key && dt.Rows[dt.Rows.Count - 1]["Wiadomosc5"].ToString() != hrefList[i].Key &&
+                                dt.Rows[dt.Rows.Count - 1]["Wiadomosc6"].ToString() != hrefList[i].Key && dt.Rows[dt.Rows.Count - 1]["Wiadomosc7"].ToString() != hrefList[i].Key && dt.Rows[dt.Rows.Count - 1]["Wiadomosc8"].ToString() != hrefList[i].Key &&
+                                dt.Rows[dt.Rows.Count - 1]["Wiadomosc9"].ToString() != hrefList[i].Key && dt.Rows[dt.Rows.Count - 1]["Wiadomosc10"].ToString() != hrefList[i].Key)
                             {
                                 listTemp.Add(hrefList[i]);
                                 imageListTemp.Add("http://www.skra.pl/" + imgList[i].Replace("S.jpg", "Xl.jpg"));
@@ -120,7 +122,7 @@ namespace GksKatowiceBot.Helpers
                     }
                 }
 
-                for (int i = 0; i < 6; i++)
+                for (int i = 0; i < hrefList.Count; i++)
                 {
                     string link = "";
                     if (hrefList[i].Key.Contains("http"))
@@ -155,7 +157,7 @@ namespace GksKatowiceBot.Helpers
                     else
                     {
                         list.Add(GetHeroCard(
-                        titleList[i].ToString().Replace("&oacute;", "ó").Replace("&bdquo;", "-"), "", "",
+                        titleList[i].ToString().Replace("&oacute;", "ó").Replace("&bdquo;", " ").Replace("&rdquo;",""), "", "",
                         new CardImage(url: "http://www.skra.pl" + imgList[i].Replace("S.jpg","XL.jpg")),
                         new CardAction(ActionTypes.OpenUrl, "Więcej", value: link),
                         new CardAction(ActionTypes.OpenUrl, "Udostępnij", value: "https://www.facebook.com/sharer/sharer.php?u=" + link))

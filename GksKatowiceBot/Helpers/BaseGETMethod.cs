@@ -16,7 +16,7 @@ namespace GksKatowiceBot.Helpers
     {
         
 
-          public static IList<Attachment> GetCardsAttachmentsAktualnosci(ref List<IGrouping<string, string>> hrefList, bool newUser = false)
+          public static IList<Attachment> GetCardsAttachmentsAktualnosci(ref List<IGrouping<string, string>> hrefList, bool newUser = false,DataTable dtWiadomosci=null)
         {
             List<Attachment> list = new List<Attachment>();
 
@@ -76,7 +76,8 @@ namespace GksKatowiceBot.Helpers
 
                 int index = hrefList.Count;
 
-                DataTable dt = BaseDB.GetWiadomosci();
+                DataTable dt = dtWiadomosci;
+                if(dt == null)  BaseDB.GetWiadomosci();
 
                 if (newUser == true)
                 {
@@ -104,7 +105,7 @@ namespace GksKatowiceBot.Helpers
                                 dt.Rows[dt.Rows.Count - 1]["Wiadomosc9"].ToString() != hrefList[i].Key && dt.Rows[dt.Rows.Count - 1]["Wiadomosc10"].ToString() != hrefList[i].Key)
                             {
                                 listTemp.Add(hrefList[i]);
-                                imageListTemp.Add("http://www.skra.pl/" + imgList[i].Replace("S.jpg", "Xl.jpg"));
+                                imageListTemp.Add(imgList[i].Replace("S.jpg", "XL.jpg"));
                                 titleListTemp.Add(titleList[i].ToString().Replace("&quot;", ""));
                             }
                             listTemp2.Add(hrefList[i]);
@@ -374,7 +375,7 @@ namespace GksKatowiceBot.Helpers
 
             try
             {
-                SqlConnection sqlConnection1 = new SqlConnection("Server=tcp:plps.database.windows.net,1433;Initial Catalog=PLPS;Persist Security Info=False;User ID=tomasoft;Password=Tomason18,;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
+                SqlConnection sqlConnection1 = new SqlConnection("Server=tcp:plps.database.windows.net,1433;Initial Catalog=SkraBelchatow;Persist Security Info=False;User ID=tomasoft;Password=Tomason18,;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
                 SqlCommand cmd = new SqlCommand();
 
                 cmd.CommandText = "SELECT * FROM [dbo].[WiadomosciSkraBelchatow]";
@@ -401,7 +402,7 @@ namespace GksKatowiceBot.Helpers
 
             try
             {
-                SqlConnection sqlConnection1 = new SqlConnection("Server=tcp:plps.database.windows.net,1433;Initial Catalog=PLPS;Persist Security Info=False;User ID=tomasoft;Password=Tomason18,;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
+                SqlConnection sqlConnection1 = new SqlConnection("Server=tcp:plps.database.windows.net,1433;Initial Catalog=SkraBelchatow;Persist Security Info=False;User ID=tomasoft;Password=Tomason18,;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
                 SqlCommand cmd = new SqlCommand();
 
                 cmd.CommandText = "SELECT * FROM [dbo].[WiadomosciSkraBelchatow]";
@@ -426,7 +427,7 @@ namespace GksKatowiceBot.Helpers
 
             try
             {
-                SqlConnection sqlConnection1 = new SqlConnection("Server=tcp:plps.database.windows.net,1433;Initial Catalog=PLPS;Persist Security Info=False;User ID=tomasoft;Password=Tomason18,;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
+                SqlConnection sqlConnection1 = new SqlConnection("Server=tcp:plps.database.windows.net,1433;Initial Catalog=SkraBelchatow;Persist Security Info=False;User ID=tomasoft;Password=Tomason18,;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
                 SqlCommand cmd = new SqlCommand();
 
                 cmd.CommandText = "SELECT * FROM [dbo].[UserSkraBelchatow] where flgDeleted=0";
@@ -452,7 +453,7 @@ namespace GksKatowiceBot.Helpers
 
             try
             {
-                SqlConnection sqlConnection1 = new SqlConnection("Server=tcp:plps.database.windows.net,1433;Initial Catalog=PLPS;Persist Security Info=False;User ID=tomasoft;Password=Tomason18,;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
+                SqlConnection sqlConnection1 = new SqlConnection("Server=tcp:plps.database.windows.net,1433;Initial Catalog=SkraBelchatow;Persist Security Info=False;User ID=tomasoft;Password=Tomason18,;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
                 SqlCommand cmd = new SqlCommand();
 
                 cmd.CommandText = "SELECT * FROM [dbo].[WiadomosciSkraBelchatow]";

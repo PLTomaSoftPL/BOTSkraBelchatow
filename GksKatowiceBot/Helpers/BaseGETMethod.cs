@@ -77,7 +77,7 @@ namespace GksKatowiceBot.Helpers
                 int index = hrefList.Count;
 
                 DataTable dt = dtWiadomosci;
-                if(dt == null)  BaseDB.GetWiadomosci();
+                if(dt == null) dt=  BaseDB.GetWiadomosci();
 
                 if (newUser == true)
                 {

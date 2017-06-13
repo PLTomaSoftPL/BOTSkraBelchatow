@@ -33,11 +33,28 @@ namespace GksKatowiceBot
                 if (activity.Type == ActivityTypes.Message)
                 {
 
-                    if (BaseDB.czyAdministrator(activity.From.Id)!=null && ( ((activity.Text!=null && activity.Text.IndexOf("!!!") == 0 )|| (activity.Attachments!=null && activity.Attachments.Count>0))))
+                    if (BaseDB.czyAdministrator(activity.From.Id)!=null && ( ((activity.Text!=null && activity.Text.IndexOf("!!!") != -1 )|| (activity.Attachments!=null && activity.Attachments.Count>0))))
                     {
                         WebClient client = new WebClient();
 
-                        if (activity.Attachments!=null && activity.Attachments.Count>0)
+                        if (activity.Text.ToUpper().IndexOf("!!!ANKIETA")>-1)
+                        {
+                            try
+                            {
+                           //     int index = activity.Text.ToUpper().IndexOf("!!!ANKIETA");
+                            DataTable dt = BaseDB.DajAnkiete(Convert.ToInt32(activity.Text.ToUpper().Substring(10)));
+                            if(dt.Rows.Count>0)
+                                {
+                                    CreateAnkieta(dt, activity.From.Id.ToString());
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+
+                            }
+                        }
+                        
+                        else if (activity.Attachments!=null && activity.Attachments.Count>0)
                         {
                             //Uri uri = new Uri(activity.Attachments[0].ContentUrl);
                             string filename = activity.Attachments[0].ContentUrl.Substring(activity.Attachments[0].ContentUrl.Length - 4, 3).Replace(".","");
@@ -57,12 +74,17 @@ namespace GksKatowiceBot
                             else if(activity.Attachments[0].ContentType.Contains("video")) client.UploadData(filename + ".mp4", data);
                         }
 
-
-                        CreateMessage(activity.Attachments, activity.Text == null ? "" : activity.Text.Replace("!!!",""),activity.From.Id);
+                        if (activity.Text.ToUpper().IndexOf("!!!ANKIETA") == -1)
+                        {
+                            CreateMessage(activity.Attachments, activity.Text == null ? "" : activity.Text.Replace("!!!", ""), activity.From.Id);
+                        }
                         
                     }
                     else
                     {
+
+                        
+
                         string komenda = "";
                         if (activity.ChannelData != null)
                         {
@@ -79,8 +101,311 @@ namespace GksKatowiceBot
                             }
                         }
 
+                        
+
                         MicrosoftAppCredentials.TrustServiceUrl(@"https://facebook.botframework.com", DateTime.MaxValue);
-                        if (komenda == "DEVELOPER_DEFINED_PAYLOAD_Aktualnosci" || activity.Text == "DEVELOPER_DEFINED_PAYLOAD_Aktualnosci")
+
+                        if (komenda.Contains("DEVELOPER_DEFINED_PAYLOAD_Odpowiedz") || activity.Text.Contains("DEVELOPER_DEFINED_PAYLOAD_Odpowiedz"))
+                        {
+                           
+                            if(komenda.Substring(35,1)=="1")
+                            {
+
+                                Parameters.Parameters.userDataStruct userStruct = new Parameters.Parameters.userDataStruct();
+                                userStruct.userName = activity.From.Name;
+                                userStruct.userId = activity.From.Id;
+                                userStruct.botName = activity.Recipient.Name;
+                                userStruct.botId = activity.Recipient.Id;
+                                userStruct.ServiceUrl = activity.ServiceUrl;
+
+                                Parameters.Parameters.listaAdresow.Add(userStruct);
+                                ConnectorClient connector = new ConnectorClient(new Uri(activity.ServiceUrl));
+                                var userAccount = new ChannelAccount(name: activity.From.Name, id: activity.From.Id);
+                                var botAccount = new ChannelAccount(name: activity.Recipient.Name, id: activity.Recipient.Id);
+                                connector = new ConnectorClient(new Uri(activity.ServiceUrl));
+                                var conversationId = await connector.Conversations.CreateDirectConversationAsync(botAccount, userAccount);
+                                IMessageActivity message = Activity.CreateMessageActivity();
+                                message.ChannelData = JObject.FromObject(new
+                                {
+                                    notification_type = "REGULAR",
+
+
+                                    buttons = new dynamic[]
+                                {
+                            new
+                        {
+                                type = "web_url",
+                                url = "https://petersfancyapparel.com/classic_white_tshirt",
+                                title = "Wyniki",
+                                webview_height_ratio = "compact"
+                            }
+                                },
+
+                                    quick_replies = new dynamic[]
+                                       {
+                                //new
+                                //{oh
+                                //    content_type = "text",
+                                //    title = "Aktualności",
+                                //    payload = "DEFINED_PAYLOAD_FOR_PICKING_BLUE",
+                                //    image_url = "https://cdn3.iconfinder.com/data/icons/developperss/PNG/Blue%20Ball.png"
+                                //},
+                                new
+                                {
+                                    content_type = "text",
+                                    title = "Aktualności",
+                                    payload = "DEVELOPER_DEFINED_PAYLOAD_Aktualnosci",
+                                    //     image_url = "https://cdn3.iconfinder.com/data/icons/developperss/PNG/Green%20Ball.png"
+                                 //   image_url = "http://archiwum.koluszki.pl/zdjecia/naglowki_nowe/listopad%202013/pi%C5%82ka[1].png"
+                                },
+                                new
+                                {
+                                    content_type = "text",
+                                    title = "Galeria",
+                                    payload = "DEVELOPER_DEFINED_PAYLOAD_Galeria",
+                               //       image_url = "https://gim7bytom.edupage.org/global/pics/iconspro/sport/volleyball.png"
+                                },
+                                new
+                                {
+                                    content_type = "text",
+                                    title = "Video",
+                                    payload = "DEVELOPER_DEFINED_PAYLOAD_Video",
+                                //       image_url = "https://www.samo-lepky.sk/data/11/hokej5.png"
+                                },
+                                                                       }
+                                });
+
+
+                                message.From = botAccount;
+                                message.Recipient = userAccount;
+                                message.Conversation = new ConversationAccount(id: conversationId.Id);
+                                message.Text = "Super dziękuję za oddanie głosu :)";
+                                await connector.Conversations.SendToConversationAsync((Activity)message);
+                            }
+                            else if (komenda.Substring(35, 1) == "2")
+                            {
+
+                                Parameters.Parameters.userDataStruct userStruct = new Parameters.Parameters.userDataStruct();
+                                userStruct.userName = activity.From.Name;
+                                userStruct.userId = activity.From.Id;
+                                userStruct.botName = activity.Recipient.Name;
+                                userStruct.botId = activity.Recipient.Id;
+                                userStruct.ServiceUrl = activity.ServiceUrl;
+
+                                Parameters.Parameters.listaAdresow.Add(userStruct);
+                                ConnectorClient connector = new ConnectorClient(new Uri(activity.ServiceUrl));
+                                var userAccount = new ChannelAccount(name: activity.From.Name, id: activity.From.Id);
+                                var botAccount = new ChannelAccount(name: activity.Recipient.Name, id: activity.Recipient.Id);
+                                connector = new ConnectorClient(new Uri(activity.ServiceUrl));
+                                var conversationId = await connector.Conversations.CreateDirectConversationAsync(botAccount, userAccount);
+                                IMessageActivity message = Activity.CreateMessageActivity();
+                                message.ChannelData = JObject.FromObject(new
+                                {
+                                    notification_type = "REGULAR",
+
+
+                                    buttons = new dynamic[]
+                                {
+                            new
+                        {
+                                type = "web_url",
+                                url = "https://petersfancyapparel.com/classic_white_tshirt",
+                                title = "Wyniki",
+                                webview_height_ratio = "compact"
+                            }
+                                },
+
+                                    quick_replies = new dynamic[]
+                                       {
+                                //new
+                                //{oh
+                                //    content_type = "text",
+                                //    title = "Aktualności",
+                                //    payload = "DEFINED_PAYLOAD_FOR_PICKING_BLUE",
+                                //    image_url = "https://cdn3.iconfinder.com/data/icons/developperss/PNG/Blue%20Ball.png"
+                                //},
+                                new
+                                {
+                                    content_type = "text",
+                                    title = "Aktualności",
+                                    payload = "DEVELOPER_DEFINED_PAYLOAD_Aktualnosci",
+                                    //     image_url = "https://cdn3.iconfinder.com/data/icons/developperss/PNG/Green%20Ball.png"
+                                 //   image_url = "http://archiwum.koluszki.pl/zdjecia/naglowki_nowe/listopad%202013/pi%C5%82ka[1].png"
+                                },
+                                new
+                                {
+                                    content_type = "text",
+                                    title = "Galeria",
+                                    payload = "DEVELOPER_DEFINED_PAYLOAD_Galeria",
+                               //       image_url = "https://gim7bytom.edupage.org/global/pics/iconspro/sport/volleyball.png"
+                                },
+                                new
+                                {
+                                    content_type = "text",
+                                    title = "Video",
+                                    payload = "DEVELOPER_DEFINED_PAYLOAD_Video",
+                                //       image_url = "https://www.samo-lepky.sk/data/11/hokej5.png"
+                                },
+                                                                       }
+                                });
+
+
+                                message.From = botAccount;
+                                message.Recipient = userAccount;
+                                message.Conversation = new ConversationAccount(id: conversationId.Id);
+                                message.Text = "Super dziękuję za oddanie głosu :)";
+                                await connector.Conversations.SendToConversationAsync((Activity)message);
+                            }
+                            else if (komenda.Substring(35, 1) == "3")
+                            {
+
+                                Parameters.Parameters.userDataStruct userStruct = new Parameters.Parameters.userDataStruct();
+                                userStruct.userName = activity.From.Name;
+                                userStruct.userId = activity.From.Id;
+                                userStruct.botName = activity.Recipient.Name;
+                                userStruct.botId = activity.Recipient.Id;
+                                userStruct.ServiceUrl = activity.ServiceUrl;
+
+                                Parameters.Parameters.listaAdresow.Add(userStruct);
+                                ConnectorClient connector = new ConnectorClient(new Uri(activity.ServiceUrl));
+                                var userAccount = new ChannelAccount(name: activity.From.Name, id: activity.From.Id);
+                                var botAccount = new ChannelAccount(name: activity.Recipient.Name, id: activity.Recipient.Id);
+                                connector = new ConnectorClient(new Uri(activity.ServiceUrl));
+                                var conversationId = await connector.Conversations.CreateDirectConversationAsync(botAccount, userAccount);
+                                IMessageActivity message = Activity.CreateMessageActivity();
+                                message.ChannelData = JObject.FromObject(new
+                                {
+                                    notification_type = "REGULAR",
+
+
+                                    buttons = new dynamic[]
+                                {
+                            new
+                        {
+                                type = "web_url",
+                                url = "https://petersfancyapparel.com/classic_white_tshirt",
+                                title = "Wyniki",
+                                webview_height_ratio = "compact"
+                            }
+                                },
+
+                                    quick_replies = new dynamic[]
+                                       {
+                                //new
+                                //{oh
+                                //    content_type = "text",
+                                //    title = "Aktualności",
+                                //    payload = "DEFINED_PAYLOAD_FOR_PICKING_BLUE",
+                                //    image_url = "https://cdn3.iconfinder.com/data/icons/developperss/PNG/Blue%20Ball.png"
+                                //},
+                                new
+                                {
+                                    content_type = "text",
+                                    title = "Aktualności",
+                                    payload = "DEVELOPER_DEFINED_PAYLOAD_Aktualnosci",
+                                    //     image_url = "https://cdn3.iconfinder.com/data/icons/developperss/PNG/Green%20Ball.png"
+                                 //   image_url = "http://archiwum.koluszki.pl/zdjecia/naglowki_nowe/listopad%202013/pi%C5%82ka[1].png"
+                                },
+                                new
+                                {
+                                    content_type = "text",
+                                    title = "Galeria",
+                                    payload = "DEVELOPER_DEFINED_PAYLOAD_Galeria",
+                               //       image_url = "https://gim7bytom.edupage.org/global/pics/iconspro/sport/volleyball.png"
+                                },
+                                new
+                                {
+                                    content_type = "text",
+                                    title = "Video",
+                                    payload = "DEVELOPER_DEFINED_PAYLOAD_Video",
+                                //       image_url = "https://www.samo-lepky.sk/data/11/hokej5.png"
+                                },
+                                                                       }
+                                });
+
+
+                                message.From = botAccount;
+                                message.Recipient = userAccount;
+                                message.Conversation = new ConversationAccount(id: conversationId.Id);
+                                message.Text = "Super dziękuję za oddanie głosu :)";
+                                await connector.Conversations.SendToConversationAsync((Activity)message);
+                            }
+                            else if (komenda.Substring(35, 1) == "4")
+                            {
+
+                                Parameters.Parameters.userDataStruct userStruct = new Parameters.Parameters.userDataStruct();
+                                userStruct.userName = activity.From.Name;
+                                userStruct.userId = activity.From.Id;
+                                userStruct.botName = activity.Recipient.Name;
+                                userStruct.botId = activity.Recipient.Id;
+                                userStruct.ServiceUrl = activity.ServiceUrl;
+
+                                Parameters.Parameters.listaAdresow.Add(userStruct);
+                                ConnectorClient connector = new ConnectorClient(new Uri(activity.ServiceUrl));
+                                var userAccount = new ChannelAccount(name: activity.From.Name, id: activity.From.Id);
+                                var botAccount = new ChannelAccount(name: activity.Recipient.Name, id: activity.Recipient.Id);
+                                connector = new ConnectorClient(new Uri(activity.ServiceUrl));
+                                var conversationId = await connector.Conversations.CreateDirectConversationAsync(botAccount, userAccount);
+                                IMessageActivity message = Activity.CreateMessageActivity();
+                                message.ChannelData = JObject.FromObject(new
+                                {
+                                    notification_type = "REGULAR",
+
+
+                                    buttons = new dynamic[]
+                                {
+                            new
+                        {
+                                type = "web_url",
+                                url = "https://petersfancyapparel.com/classic_white_tshirt",
+                                title = "Wyniki",
+                                webview_height_ratio = "compact"
+                            }
+                                },
+
+                                    quick_replies = new dynamic[]
+                                       {
+                                //new
+                                //{oh
+                                //    content_type = "text",
+                                //    title = "Aktualności",
+                                //    payload = "DEFINED_PAYLOAD_FOR_PICKING_BLUE",
+                                //    image_url = "https://cdn3.iconfinder.com/data/icons/developperss/PNG/Blue%20Ball.png"
+                                //},
+                                new
+                                {
+                                    content_type = "text",
+                                    title = "Aktualności",
+                                    payload = "DEVELOPER_DEFINED_PAYLOAD_Aktualnosci",
+                                    //     image_url = "https://cdn3.iconfinder.com/data/icons/developperss/PNG/Green%20Ball.png"
+                                 //   image_url = "http://archiwum.koluszki.pl/zdjecia/naglowki_nowe/listopad%202013/pi%C5%82ka[1].png"
+                                },
+                                new
+                                {
+                                    content_type = "text",
+                                    title = "Galeria",
+                                    payload = "DEVELOPER_DEFINED_PAYLOAD_Galeria",
+                               //       image_url = "https://gim7bytom.edupage.org/global/pics/iconspro/sport/volleyball.png"
+                                },
+                                new
+                                {
+                                    content_type = "text",
+                                    title = "Video",
+                                    payload = "DEVELOPER_DEFINED_PAYLOAD_Video",
+                                //       image_url = "https://www.samo-lepky.sk/data/11/hokej5.png"
+                                },
+                                                                       }
+                                });
+
+
+                                message.From = botAccount;
+                                message.Recipient = userAccount;
+                                message.Conversation = new ConversationAccount(id: conversationId.Id);
+                                message.Text = "Super dziękuję za oddanie głosu :)";
+                                await connector.Conversations.SendToConversationAsync((Activity)message);
+                            }
+                        }
+                        else if (komenda == "DEVELOPER_DEFINED_PAYLOAD_Aktualnosci" || activity.Text == "DEVELOPER_DEFINED_PAYLOAD_Aktualnosci")
                         {
                             Parameters.Parameters.userDataStruct userStruct = new Parameters.Parameters.userDataStruct();
                             userStruct.userName = activity.From.Name;
@@ -152,7 +477,7 @@ namespace GksKatowiceBot
                             await connector.Conversations.SendToConversationAsync((Activity)message);
                         }
                         else
-                            if (komenda == "DEVELOPER_DEFINED_PAYLOAD_Galeria" || activity.Text == "DEVELOPER_DEFINED_PAYLOAD_Galeria")
+                             if (komenda == "DEVELOPER_DEFINED_PAYLOAD_Galeria" || activity.Text == "DEVELOPER_DEFINED_PAYLOAD_Galeria")
                         {
                             Parameters.Parameters.userDataStruct userStruct = new Parameters.Parameters.userDataStruct();
                             userStruct.userName = activity.From.Name;
@@ -230,7 +555,7 @@ namespace GksKatowiceBot
                             await connector.Conversations.SendToConversationAsync((Activity)message);
                         }
                         else
-                                if (komenda == "DEVELOPER_DEFINED_PAYLOAD_Video" || activity.Text== "DEVELOPER_DEFINED_PAYLOAD_Video")
+                                 if (komenda == "DEVELOPER_DEFINED_PAYLOAD_Video" || activity.Text == "DEVELOPER_DEFINED_PAYLOAD_Video")
                         {
                             Parameters.Parameters.userDataStruct userStruct = new Parameters.Parameters.userDataStruct();
                             userStruct.userName = activity.From.Name;
@@ -308,7 +633,7 @@ namespace GksKatowiceBot
                             await connector.Conversations.SendToConversationAsync((Activity)message);
                         }
                         else
-                                    if (activity.Text == "USER_DEFINED_PAYLOAD")
+                                     if (activity.Text == "USER_DEFINED_PAYLOAD")
                         {
                             Parameters.Parameters.userDataStruct userStruct = new Parameters.Parameters.userDataStruct();
                             userStruct.userName = activity.From.Name;
@@ -386,11 +711,11 @@ namespace GksKatowiceBot
 
                             await connector.Conversations.SendToConversationAsync((Activity)message);
 
-//                            message.Text = @"Współpraca między nami jest bardzo prosta.Wydajesz mi polecenia, a ja za Ciebie wykonuje robotę.
-//Zaznacz tylko w rozwijanym menu lub skorzystaj z podpowiedzi, która sekcja cię interesuje, a ja automatycznie połączę Cię z aktualnościami z wybranej sekcji.
-//";
+                            //                            message.Text = @"Współpraca między nami jest bardzo prosta.Wydajesz mi polecenia, a ja za Ciebie wykonuje robotę.
+                            //Zaznacz tylko w rozwijanym menu lub skorzystaj z podpowiedzi, która sekcja cię interesuje, a ja automatycznie połączę Cię z aktualnościami z wybranej sekcji.
+                            //";
 
-//                            await connector.Conversations.SendToConversationAsync((Activity)message);
+                            //                            await connector.Conversations.SendToConversationAsync((Activity)message);
                         }
 
                         else if (komenda == "DEVELOPER_DEFINED_PAYLOAD_POWIADOMIENIA" || activity.Text == "DEVELOPER_DEFINED_PAYLOAD_POWIADOMIENIA" || activity.Text == "Powiadomienia")
@@ -743,19 +1068,19 @@ namespace GksKatowiceBot
                             message.Conversation = new ConversationAccount(id: conversationId.Id);
                             message.AttachmentLayout = AttachmentLayoutTypes.Carousel;
                             List<IGrouping<string, string>> hrefList = new List<IGrouping<string, string>>();
-                            message.Text = @"Cześć "+userAccount.Name.Substring(0,userAccount.Name.IndexOf(" "))+ @", jestem BOTem, Twoim asystentem do kontaktu ze stronami internetowymi klubu Skra Bełchatów. Raz dziennie powiadomię Cię o aktualnościach w poszczególnych sekcjach sportowych. Ponadto spodziewaj się powiadomień w formie komunikatów, bądź innych informacji przekazywanych przez administratora dotyczących szczególnie ważnych dla kibiców wydarzeń.   
+                            message.Text = @"Cześć " + userAccount.Name.Substring(0, userAccount.Name.IndexOf(" ")) + @", jestem BOTem, Twoim asystentem do kontaktu ze stronami internetowymi klubu Skra Bełchatów. Raz dziennie powiadomię Cię o aktualnościach w poszczególnych sekcjach sportowych. Ponadto spodziewaj się powiadomień w formie komunikatów, bądź innych informacji przekazywanych przez administratora dotyczących szczególnie ważnych dla kibiców wydarzeń.   
 ";
                             // message.Attachments = GetCardsAttachments(ref hrefList, true);
 
                             await connector.Conversations.SendToConversationAsync((Activity)message);
 
-//                            message.Text = @"Współpraca między nami jest bardzo prosta.Wydajesz mi polecenia, a ja za Ciebie wykonuje robotę.
-//Zaznacz tylko w rozwijanym menu lub skorzystaj z podpowiedzi, która sekcja cię interesuje, a ja automatycznie połączę Cię z aktualnościami z wybranej sekcji.
-//";
+                            //                            message.Text = @"Współpraca między nami jest bardzo prosta.Wydajesz mi polecenia, a ja za Ciebie wykonuje robotę.
+                            //Zaznacz tylko w rozwijanym menu lub skorzystaj z podpowiedzi, która sekcja cię interesuje, a ja automatycznie połączę Cię z aktualnościami z wybranej sekcji.
+                            //";
 
-//                            await connector.Conversations.SendToConversationAsync((Activity)message);
+                            //                            await connector.Conversations.SendToConversationAsync((Activity)message);
                         }
-                     
+
                         else
                         {
 
@@ -927,25 +1252,9 @@ namespace GksKatowiceBot
                         if (foto[0].ContentType.Contains("image")) foto[0].ContentUrl = "http://serwer1606926.home.pl/pub/" + filename + ".png";//since the baseaddress
                         else if (foto[0].ContentType.Contains("video")) foto[0].ContentUrl = "http://serwer1606926.home.pl/pub/" + filename + ".mp4";
 
-                        //foto[0].ContentUrl = "http://serwer1606926.home.pl/pub/" + filename + ".png";
-
                         message.Attachments = foto;
                     }
                     
-                    
-                    //var list = new List<Attachment>();
-                    //if (foto != null)
-                    //{
-                    //    for (int i = 0; i < foto.Count; i++)
-                    //    {
-                    //        list.Add(GetHeroCard(
-                    //       foto[i].ContentUrl, "", "",
-                    //       new CardImage(url: foto[i].ContentUrl),
-                    //       new CardAction(ActionTypes.OpenUrl, "", value: ""),
-                    //       new CardAction(ActionTypes.OpenUrl, "", value: "https://www.facebook.com/sharer/sharer.php?u=" + "")));
-                    //    }
-                    //}
-
                     message.Text = wiadomosc;
                     for (int i = 0; i < dt.Rows.Count; i++)
                     {
@@ -957,7 +1266,7 @@ namespace GksKatowiceBot
                                 var userAccount = new ChannelAccount(name: dt.Rows[i]["UserName"].ToString(), id: dt.Rows[i]["UserId"].ToString());
                                 uzytkownik = userAccount.Name;
                                 var botAccount = new ChannelAccount(name: dt.Rows[i]["BotName"].ToString(), id: dt.Rows[i]["BotId"].ToString());
-                                var connector = new ConnectorClient(new Uri(dt.Rows[i]["Url"].ToString()), "8fa14720-e758-4cc7-82fd-fd6ad145ec90", "k06YVEnXZ57GNbmaxuLbyj9");
+                                var connector = new ConnectorClient(new Uri(dt.Rows[i]["Url"].ToString()), "8fa14720-e758-4cc7-82fd-fd6ad145ec90", "oExpuWnvj4oDAQnYHSpVrCJ");
                                 var conversationId = await connector.Conversations.CreateDirectConversationAsync(botAccount, userAccount);
                                 message.From = botAccount;
                                 message.Recipient = userAccount;
@@ -986,8 +1295,130 @@ namespace GksKatowiceBot
 
 
 
+        public async static void CreateAnkieta(DataTable dtAnkieta,string fromId)
+        {
+            try
+            {
+                BaseDB.AddToLog("Wywołanie metody CreateAnkieta");
 
-      
+                string uzytkownik = "";
+                DataTable dt = BaseGETMethod.GetUser();
+
+                try
+                {
+                    MicrosoftAppCredentials.TrustServiceUrl(@"https://facebook.botframework.com", DateTime.MaxValue);
+
+                    IMessageActivity message = Activity.CreateMessageActivity();
+                    message.ChannelData = JObject.FromObject(new
+                    {
+                        notification_type = "REGULAR",
+                        //buttons = new dynamic[]
+                        // {
+                        //     new
+                        //     {
+                        //    type ="postback",
+                        //    title="Tytul",
+                        //    vslue = "tytul",
+                        //    payload="DEVELOPER_DEFINED_PAYLOAD"
+                        //     }
+                        // },
+                        quick_replies = new dynamic[]
+  {
+                                //new
+                                //{
+                                //    content_type = "text",
+                                //    title = "Aktualności",
+                                //    payload = "DEFINED_PAYLOAD_FOR_PICKING_BLUE",
+                                //    image_url = "https://cdn3.iconfinder.com/data/icons/developperss/PNG/Blue%20Ball.png"
+                                //},
+                                new
+                                {
+                                    content_type = "text",
+                                    title = dtAnkieta.Rows[0]["Odpowiedz1"].ToString(),
+                                    payload = "DEVELOPER_DEFINED_PAYLOAD_Odpowiedz1_"+dtAnkieta.Rows[0]["ID"],
+                                    //     image_url = "https://cdn3.iconfinder.com/data/icons/developperss/PNG/Green%20Ball.png"
+                                   // image_url = "http://archiwum.koluszki.pl/zdjecia/naglowki_nowe/listopad%202013/pi%C5%82ka[1].png"
+                                },
+                                new
+                                {
+                                    content_type = "text",
+                                    title = dtAnkieta.Rows[0]["Odpowiedz2"].ToString(),
+                                    payload = "DEVELOPER_DEFINED_PAYLOAD_Odpowiedz2_"+dtAnkieta.Rows[0]["ID"],
+                           //         image_url = "https://gim7bytom.edupage.org/global/pics/iconspro/sport/volleyball.png"
+                                },                                new
+                                {
+                                    content_type = "text",
+                                    title = dtAnkieta.Rows[0]["Odpowiedz3"].ToString(),
+                                    payload = "DEVELOPER_DEFINED_PAYLOAD_Odpowiedz3_"+dtAnkieta.Rows[0]["ID"],
+                                //       image_url = "https://cdn3.iconfinder.com/data/icons/developperss/PNG/Green%20Ball.png"
+                                },
+                                                               new
+                                {
+                                    content_type = "text",
+                                    title = dtAnkieta.Rows[0]["Odpowiedz4"].ToString(),
+                                    payload = "DEVELOPER_DEFINED_PAYLOAD_Odpowiedz4_"+dtAnkieta.Rows[0]["ID"],
+                                //       image_url = "https://cdn3.iconfinder.com/data/icons/developperss/PNG/Green%20Ball.png"
+                                },
+
+                                 }
+                    });
+
+                    message.AttachmentLayout = null;
+
+                 
+
+
+                    //var list = new List<Attachment>();
+                    //if (foto != null)
+                    //{
+                    //    for (int i = 0; i < foto.Count; i++)
+                    //    {
+                    //        list.Add(GetHeroCard(
+                    //       foto[i].ContentUrl, "", "",
+                    //       new CardImage(url: foto[i].ContentUrl),
+                    //       new CardAction(ActionTypes.OpenUrl, "", value: ""),
+                    //       new CardAction(ActionTypes.OpenUrl, "", value: "https://www.facebook.com/sharer/sharer.php?u=" + "")));
+                    //    }
+                    //}
+
+                    message.Text = dtAnkieta.Rows[0]["Tresc"].ToString();
+                    for (int i = 0; i < dt.Rows.Count; i++)
+                    {
+                        try
+                        {
+                            if (fromId != dt.Rows[i]["UserId"].ToString())
+                            {
+
+                                var userAccount = new ChannelAccount(name: dt.Rows[i]["UserName"].ToString(), id: dt.Rows[i]["UserId"].ToString());
+                                uzytkownik = userAccount.Name;
+                                var botAccount = new ChannelAccount(name: dt.Rows[i]["BotName"].ToString(), id: dt.Rows[i]["BotId"].ToString());
+                                var connector = new ConnectorClient(new Uri(dt.Rows[i]["Url"].ToString()), "8fa14720-e758-4cc7-82fd-fd6ad145ec90", "oExpuWnvj4oDAQnYHSpVrCJ");
+                                var conversationId = await connector.Conversations.CreateDirectConversationAsync(botAccount, userAccount);
+                                message.From = botAccount;
+                                message.Recipient = userAccount;
+                                message.Conversation = new ConversationAccount(id: conversationId.Id, isGroup: false);
+                                //await connector.Conversations.SendToConversationAsync((Activity)message).ConfigureAwait(false);
+
+                                var returne = await connector.Conversations.SendToConversationAsync((Activity)message);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            BaseDB.AddToLog("Błąd wysyłania wiadomości do: " + uzytkownik + " " + ex.ToString());
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    BaseDB.AddToLog("Błąd wysyłania wiadomości do: " + uzytkownik + " " + ex.ToString());
+                }
+            }
+            catch (Exception ex)
+            {
+                BaseDB.AddToLog("Błąd wysłania wiadomosci: " + ex.ToString());
+            }
+        }
+
 
         public static void CallToChildThread()
         {

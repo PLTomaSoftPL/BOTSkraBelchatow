@@ -42,6 +42,33 @@ namespace GksKatowiceBot.Helpers
                 //sqlConnection1.Close();
             }
         }
+
+
+        public static DataTable DajAnkiete(int numerAnkiety)
+        {
+            try
+            {
+                SqlConnection sqlConnection1 = new SqlConnection("Server=tcp:plps.database.windows.net,1433;Initial Catalog=SkraBelchatow;Persist Security Info=False;User ID=tomasoft;Password=Tomason18,;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
+                SqlCommand cmd = new SqlCommand();
+
+                DataTable dataTable = new DataTable();
+
+                cmd.CommandText = "Exec DajAnkietyByID " + numerAnkiety;
+                cmd.CommandType = CommandType.Text;
+                cmd.Connection = sqlConnection1;
+
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                // this will query your database and return the result to your datatable
+                da.Fill(dataTable);
+                sqlConnection1.Close();
+                da.Dispose();
+                return dataTable;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
         public static void AddUser(string UserName, string UserId, string BotName, string BotId, string Url, byte flgTyp)
         {
             try

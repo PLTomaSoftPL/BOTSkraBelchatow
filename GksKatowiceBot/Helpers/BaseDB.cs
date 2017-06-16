@@ -43,6 +43,7 @@ namespace GksKatowiceBot.Helpers
             }
         }
 
+     
 
         public static DataTable DajAnkiete(int numerAnkiety)
         {

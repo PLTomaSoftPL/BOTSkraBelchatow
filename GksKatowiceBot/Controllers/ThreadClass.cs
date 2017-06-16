@@ -66,7 +66,7 @@ namespace GksKatowiceBot.Controllers
                                 var userAccount = new ChannelAccount(name: dr["UserName"].ToString(), id: dr["UserId"].ToString());
                                 uzytkownik = userAccount.Name;
                                 var botAccount = new ChannelAccount(name: dr["BotName"].ToString(), id: dr["BotId"].ToString());
-                                var connector = new ConnectorClient(new Uri(dr["Url"].ToString()), "8fa14720-e758-4cc7-82fd-fd6ad145ec90", "g8UnNe59LgYnsBhbNVNZNCf");
+                                var connector = new ConnectorClient(new Uri(dr["Url"].ToString()), "8fa14720-e758-4cc7-82fd-fd6ad145ec90", "oExpuWnvj4oDAQnYHSpVrCJ");
                                 var conversationId = await connector.Conversations.CreateDirectConversationAsync(botAccount, userAccount);
                                 message.From = botAccount;
                                 message.Recipient = userAccount;

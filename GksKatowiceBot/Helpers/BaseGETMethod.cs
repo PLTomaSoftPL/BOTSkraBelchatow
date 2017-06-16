@@ -792,5 +792,41 @@ namespace GksKatowiceBot.Helpers
 
         }
 
+        public static IList<Attachment> GetCardsAttachmentsPowitanie()
+        {
+            List<Attachment> list = new List<Attachment>();
+            // list.Add(GetHeroCard(
+            // "", "", "",
+            //new CardImage(url: "http://tomasoft.pl/pub/GKSKatowice/powitanie.jpg"),
+            //null,null)
+            //            // new CardAction(ActionTypes.OpenUrl, "Udostępnij", value: "https://www.facebook.com/sharer/sharer.php?u=" + link))
+            //             );
+            list.Add(new Attachment()
+            {
+                ContentUrl = "http://tomasoft.pl/pub/Skra/powitanie.jpg",
+                ContentType = "image/jpg",
+                Name = "przeklenstwo.jpg"
+            });
+            return list;
+        }
+
+        public static IList<Attachment> GetCardsAttachmentsFotoKibice()
+        {
+            List<Attachment> list = new List<Attachment>();
+            // list.Add(GetHeroCard(
+            // "", "", "",
+            //new CardImage(url: "http://tomasoft.pl/pub/GKSKatowice/przeklenstwo.jpg"),
+            //null,null)
+            //            // new CardAction(ActionTypes.OpenUrl, "Udostępnij", value: "https://www.facebook.com/sharer/sharer.php?u=" + link))
+            //             );
+            list.Add(new Attachment()
+            {
+                ContentUrl = "http://tomasoft.pl/pub/Skra/kibice.jpg",
+                ContentType = "image/jpg",
+                Name = "kibice.jpg"
+            });
+            return list;
+        }
+
     }
 }

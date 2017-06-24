@@ -42,11 +42,18 @@ namespace GksKatowiceBot.Controllers
                                     //     image_url = "https://cdn3.iconfinder.com/data/icons/developperss/PNG/Green%20Ball.png"
                                  //   image_url = "http://archiwum.koluszki.pl/zdjecia/naglowki_nowe/listopad%202013/pi%C5%82ka[1].png"
                                 },
-                                new
+                               // new
+                               // {
+                               //     content_type = "text",
+                               //     title = "Galeria",
+                               //     payload = "DEVELOPER_DEFINED_PAYLOAD_Galeria",
+                               ////       image_url = "https://gim7bytom.edupage.org/global/pics/iconspro/sport/volleyball.png"
+                               // },
+                               new
                                 {
                                     content_type = "text",
-                                    title = "Galeria",
-                                    payload = "DEVELOPER_DEFINED_PAYLOAD_Galeria",
+                                    title = "Sklep",
+                                    payload = "DEVELOPER_DEFINED_PAYLOAD_Sklep",
                                //       image_url = "https://gim7bytom.edupage.org/global/pics/iconspro/sport/volleyball.png"
                                 },
                                 new

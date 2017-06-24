@@ -123,6 +123,42 @@ namespace GksKatowiceBot.Helpers
             }
         }
 
+        public static byte czyPrzeklenstwo(string Tekst)
+        {
+            byte returnValue = 0;
+            try
+            {
+                SqlConnection sqlConnection1 = new SqlConnection("Server=tcp:plps.database.windows.net,1433;Initial Catalog=PLPS;Persist Security Info=False;User ID=tomasoft;Password=Tomason18,;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
+                SqlCommand cmd = new SqlCommand();
+                SqlDataReader reader;
+
+                cmd.CommandText = "proceduraPrzeklenstwaGKSKatowice";
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@Tekst", Tekst.ToLower());
+                cmd.Connection = sqlConnection1;
+
+                sqlConnection1.Open();
+                var rowsAffected = cmd.ExecuteScalar();
+
+                sqlConnection1.Close();
+
+                if (rowsAffected.ToString() != "0")
+                {
+                    returnValue = 1;
+                }
+                else
+                {
+                    returnValue = 0;
+                }
+                return returnValue;
+            }
+            catch (Exception ex)
+            {
+                AddToLog("Blad sprawdzania uzytkownika czy admnistrator " + ex.ToString());
+                return returnValue;
+            }
+        }
+
         public static byte czyPowiadomienia(string UserId)
         {
             byte returnValue = 0;

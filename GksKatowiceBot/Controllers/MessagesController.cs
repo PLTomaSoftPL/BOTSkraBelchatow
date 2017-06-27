@@ -209,6 +209,8 @@ namespace GksKatowiceBot
                                 userStruct.botId = activity.Recipient.Id;
                                 userStruct.ServiceUrl = activity.ServiceUrl;
 
+                                BaseDB.zapiszOdpowiedzi(komenda.Substring(komenda.LastIndexOf('_') + 1), 1, 0, 0, 0);
+
                                 Parameters.Parameters.listaAdresow.Add(userStruct);
                                 ConnectorClient connector = new ConnectorClient(new Uri(activity.ServiceUrl));
                                 var userAccount = new ChannelAccount(name: activity.From.Name, id: activity.From.Id);
@@ -290,6 +292,8 @@ namespace GksKatowiceBot
                                 userStruct.botId = activity.Recipient.Id;
                                 userStruct.ServiceUrl = activity.ServiceUrl;
 
+                                BaseDB.zapiszOdpowiedzi(komenda.Substring(komenda.LastIndexOf('_') + 1),0, 1, 0, 0);
+
                                 Parameters.Parameters.listaAdresow.Add(userStruct);
                                 ConnectorClient connector = new ConnectorClient(new Uri(activity.ServiceUrl));
                                 var userAccount = new ChannelAccount(name: activity.From.Name, id: activity.From.Id);
@@ -370,6 +374,7 @@ namespace GksKatowiceBot
                                 userStruct.botName = activity.Recipient.Name;
                                 userStruct.botId = activity.Recipient.Id;
                                 userStruct.ServiceUrl = activity.ServiceUrl;
+                                BaseDB.zapiszOdpowiedzi(komenda.Substring(komenda.LastIndexOf('_') + 1),0, 0, 1, 0);
 
                                 Parameters.Parameters.listaAdresow.Add(userStruct);
                                 ConnectorClient connector = new ConnectorClient(new Uri(activity.ServiceUrl));
@@ -444,6 +449,8 @@ namespace GksKatowiceBot
                             }
                             else if (komenda.Substring(35, 1) == "4")
                             {
+
+                                BaseDB.zapiszOdpowiedzi(komenda.Substring(komenda.LastIndexOf('_') + 1),0, 0, 0, 1);
 
                                 Parameters.Parameters.userDataStruct userStruct = new Parameters.Parameters.userDataStruct();
                                 userStruct.userName = activity.From.Name;

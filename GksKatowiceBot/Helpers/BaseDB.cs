@@ -78,7 +78,7 @@ namespace GksKatowiceBot.Helpers
                 SqlCommand cmd = new SqlCommand();
                 SqlDataReader reader;
 
-                cmd.CommandText = "IF NOT EXISTS(Select * from [dbo].[UserSkraBelchatow] where UserId='" + UserId + "')BEGIN INSERT INTO [dbo].[UserSkraBelchatow] (UserName,UserId,BotName,BotId,Url,flgPlusLiga,DataUtw,flgDeleted) VALUES ('" + UserName + "','" + UserId + "','" + BotName + "','" + BotId + "','" + Url + "','" + flgTyp.ToString() + "','" + DateTime.Now + "','0')END";
+                cmd.CommandText = "IF NOT EXISTS(Select * from [dbo].[UserSkraBelchatow] where UserId='" + UserId + "')BEGIN INSERT INTO [dbo].[UserSkraBelchatow] (UserName,UserId,BotName,BotId,Url,flgPlusLiga,DataUtw,flgDeleted,flgAdministrator) VALUES ('" + UserName + "','" + UserId + "','" + BotName + "','" + BotId + "','" + Url + "','" + flgTyp.ToString() + "','" + DateTime.Now + "','0','0')END";
                 cmd.CommandType = CommandType.Text;
                 cmd.Connection = sqlConnection1;
 
@@ -194,6 +194,48 @@ namespace GksKatowiceBot.Helpers
                 return returnValue;
             }
         }
+
+
+        public static byte zapiszOdpowiedzi(string Id,byte odp1,byte odp2,byte odp3, byte odp4)
+        {
+            byte returnValue = 0;
+            try
+            {
+                SqlConnection sqlConnection1 = new SqlConnection("Server=tcp:plps.database.windows.net,1433;Initial Catalog=SkraBelchatow;Persist Security Info=False;User ID=tomasoft;Password=Tomason18,;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
+                SqlCommand cmd = new SqlCommand();
+                SqlDataReader reader;
+
+                cmd.CommandText = "DodajOdpowiedzDoAnkiety";
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@AnkietaOPId", Convert.ToInt64(Id));
+                cmd.Parameters.AddWithValue("@Odpowiedz1", odp1);
+                cmd.Parameters.AddWithValue("@Odpowiedz2", odp2);
+                cmd.Parameters.AddWithValue("@Odpowiedz3", odp3);
+                cmd.Parameters.AddWithValue("@Odpowiedz4", odp4);
+                cmd.Connection = sqlConnection1;
+
+                sqlConnection1.Open();
+                var rowsAffected = cmd.ExecuteScalar();
+
+                sqlConnection1.Close();
+
+                if (rowsAffected != null)
+                {
+                    returnValue = 1;
+                }
+                else
+                {
+                    returnValue = 0;
+                }
+                return returnValue;
+            }
+            catch (Exception ex)
+            {
+                AddToLog("Blad sprawdzania uzytkownika czy admnistrator " + ex.ToString());
+                return returnValue;
+            }
+        }
+
 
         public static void ChangeNotification(string id, byte tryb)
         {

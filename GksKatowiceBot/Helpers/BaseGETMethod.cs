@@ -286,7 +286,7 @@ namespace GksKatowiceBot.Helpers
                     {
                         list.Add(GetHeroCard(
                         titleList[i].ToString().Replace("&oacute;", "ó").Replace("&bdquo;", " ").Replace("&rdquo;", "").Replace("amp;",""),"Cena: "+priceList[i].InnerText, "",
-                        new CardImage(url: imgList[i].Replace("home.jpg", "large.jpg")),
+                        new CardImage(url: imgList[i].Replace("-home.jpg", "-large.jpg")),
                         new CardAction(ActionTypes.OpenUrl, "Zobacz", value: link),
                         new CardAction(ActionTypes.OpenUrl, "Udostępnij", value: "https://www.facebook.com/sharer/sharer.php?u=" + link))
                         );
@@ -679,7 +679,7 @@ namespace GksKatowiceBot.Helpers
                     else
                     {
                         list.Add(GetHeroCard(
-                        titleList[i].ToString().Replace("&oacute;", "ó").Replace("&bdquo;", " ").Replace("&quoto;","").Replace("&rdquo;", "").Replace("amp;", ""), "Cena: " + priceList[i].InnerText, "",
+                        titleList[i].ToString().Replace("&oacute;", "ó").Replace("&bdquo;", " ").Replace("&quoto;","").Replace("&rdquo;", "").Replace("amp;", "").Replace("&quot;",""), "Cena: " + priceList[i].InnerText, "",
                         new CardImage(url: imgList[i].Replace("home.jpg", "large.jpg")),
                         new CardAction(ActionTypes.OpenUrl, "Zobacz", value: link),
                         new CardAction(ActionTypes.OpenUrl, "Udostępnij", value: "https://www.facebook.com/sharer/sharer.php?u=" + link))

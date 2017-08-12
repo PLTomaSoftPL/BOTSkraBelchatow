@@ -1376,7 +1376,7 @@ namespace GksKatowiceBot.Helpers
                     }
                 }
 
-                for (int i = 0; i < 6; i++)
+                for (int i = 0; i < hrefList.Count; i++)
                 {
                     string link = "";
                     if (hrefList[i].Key.Contains("http"))

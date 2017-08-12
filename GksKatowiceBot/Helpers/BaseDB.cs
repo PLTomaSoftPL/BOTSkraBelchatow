@@ -196,7 +196,7 @@ namespace GksKatowiceBot.Helpers
         }
 
 
-        public static byte zapiszOdpowiedzi(string Id,byte odp1,byte odp2,byte odp3, byte odp4)
+        public static byte zapiszOdpowiedzi(string Id,byte odp1,byte odp2,byte odp3, byte odp4,byte odp5,byte odp6)
         {
             byte returnValue = 0;
             try
@@ -212,6 +212,8 @@ namespace GksKatowiceBot.Helpers
                 cmd.Parameters.AddWithValue("@Odpowiedz2", odp2);
                 cmd.Parameters.AddWithValue("@Odpowiedz3", odp3);
                 cmd.Parameters.AddWithValue("@Odpowiedz4", odp4);
+                cmd.Parameters.AddWithValue("@Odpowiedz5", odp5);
+                cmd.Parameters.AddWithValue("@Odpowiedz6", odp6);
                 cmd.Connection = sqlConnection1;
 
                 sqlConnection1.Open();

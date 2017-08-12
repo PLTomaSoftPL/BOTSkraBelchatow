@@ -111,9 +111,9 @@ namespace GksKatowiceBot
                             try
                             {
                                 BaseDB.AddToLog("Przesylany Json " + activity.ChannelData.ToString());
-                                var stuff = JsonConvert.DeserializeObject<ClassHelpers.RootObject>(activity.ChannelData.ToString());
-                                //     komenda = stuff.message.quick_reply.payload;
-                                komenda = stuff.postback.payload;
+                                var stuff = JsonConvert.DeserializeObject<ClassHelpers.RootObject> (activity.ChannelData.ToString());
+                                //komenda = stuff.message.quick_reply.payload;
+                                komenda = stuff.message.quick_reply.payload;
                                 BaseDB.AddToLog("Komenda: " + komenda);
                             }
                             catch (Exception ex)
@@ -1771,22 +1771,6 @@ namespace GksKatowiceBot
                             var conversationId = await connector.Conversations.CreateDirectConversationAsync(botAccount, userAccount);
                             IMessageActivity message = Activity.CreateMessageActivity();
 
-
-
-
-                            message.From = botAccount;
-                            message.Recipient = userAccount;
-                            message.Conversation = new ConversationAccount(id: conversationId.Id);
-                            message.AttachmentLayout = AttachmentLayoutTypes.Carousel;
-                            message.Attachments = BaseGETMethod.GetCardsAttachmentsPowitanie();
-                            List<IGrouping<string, string>> hrefList = new List<IGrouping<string, string>>();
-
-                            await connector.Conversations.SendToConversationAsync((Activity)message);
-
-                            Thread.Sleep(100);
-                            message.Text = @"Witaj " + userAccount.Name.Substring(0, userAccount.Name.IndexOf(" ")) + @", jestem asystentem do kontaktu ze stronami internetowymi klubu Skra Bełchatów. Raz dziennie powiadomię Cię o aktualnościach z życia klubu. Ponadto spodziewaj się powiadomień w formie komunikatów, bądź innych informacji przekazywanych przez administratora dotyczących szczególnie ważnych dla kibiców wydarzeń.   
-";
-
                             message.ChannelData = JObject.FromObject(new
                             {
                                 notification_type = "REGULAR",
@@ -1801,7 +1785,7 @@ namespace GksKatowiceBot
                                 //     }
                                 // },
                                 quick_replies = new dynamic[]
-{
+                            {
                                 //new
                                 //{
                                 //    content_type = "text",
@@ -1837,8 +1821,22 @@ namespace GksKatowiceBot
                                     payload = "DEVELOPER_DEFINED_PAYLOAD_Video",
                                 //       image_url = "https://cdn3.iconfinder.com/data/icons/developperss/PNG/Green%20Ball.png"
                                 },
-                               }
+                                                           }
                             });
+
+
+                            message.From = botAccount;
+                            message.Recipient = userAccount;
+                            message.Conversation = new ConversationAccount(id: conversationId.Id);
+                            message.AttachmentLayout = AttachmentLayoutTypes.Carousel;
+                            message.Attachments = BaseGETMethod.GetCardsAttachmentsPowitanie();
+                            List<IGrouping<string, string>> hrefList = new List<IGrouping<string, string>>();
+
+                            await connector.Conversations.SendToConversationAsync((Activity)message);
+
+                            Thread.Sleep(100);
+                            message.Text = @"Witaj " + userAccount.Name.Substring(0, userAccount.Name.IndexOf(" ")) + @", jestem asystentem do kontaktu ze stronami internetowymi klubu Skra Bełchatów. Raz dziennie powiadomię Cię o aktualnościach z życia klubu. Ponadto spodziewaj się powiadomień w formie komunikatów, bądź innych informacji przekazywanych przez administratora dotyczących szczególnie ważnych dla kibiców wydarzeń.   
+";
                             message.Attachments = null;
                             // message.Attachments = GetCardsAttachments(ref hrefList, true);
 

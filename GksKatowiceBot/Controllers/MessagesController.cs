@@ -122,6 +122,11 @@ namespace GksKatowiceBot
                             }
                         }
 
+                        var toReply = activity.CreateReply(String.Empty);
+                        var connectorNew = new ConnectorClient(new Uri(activity.ServiceUrl));
+                        toReply.Type = ActivityTypes.Typing;
+                        await connectorNew.Conversations.SendToConversationAsync(toReply);
+
 
 
                         MicrosoftAppCredentials.TrustServiceUrl(@"https://facebook.botframework.com", DateTime.MaxValue);

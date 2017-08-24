@@ -7,6 +7,8 @@ using System.Web.Routing;
 using System.Timers;
 using System.Data;
 using System.Threading.Tasks;
+using GksKatowiceBot.Helpers;
+using System.Threading;
 
 namespace GksKatowiceBot
 {
@@ -30,12 +32,19 @@ namespace GksKatowiceBot
             {
                 DataTable dtWiadomosci = Helpers.BaseDB.GetWiadomosci();
                 DataTable dt = Helpers.BaseGETMethod.GetUser();
+                List<IGrouping<string, string>> hrefList = new List<IGrouping<string, string>>();
+                var items = BaseGETMethod.GetCardsAttachmentsAktualnosci(ref hrefList, false, dtWiadomosci);
+                if(items==null)
+                {
+                    Thread.Sleep(5000);
+                    items = BaseGETMethod.GetCardsAttachmentsAktualnosci(ref hrefList, false, dtWiadomosci);
+                }
                 foreach (DataRow dr in dt.Rows)
                 {
-                    Task.Run(() => Controllers.ThreadClass.SendThreadMessage(dr,dtWiadomosci));
+                    Task.Run(() => Controllers.ThreadClass.SendThreadMessage(dr,dtWiadomosci, items));
                 }
 
-                List<IGrouping<string, string>> hrefList = new List<IGrouping<string, string>>();
+                hrefList = new List<IGrouping<string, string>>();
                 Helpers.BaseGETMethod.GetCardsAttachmentsAktualnosci(ref hrefList, false, dtWiadomosci);
                 Helpers.BaseDB.AddWiadomosc(hrefList);
             }

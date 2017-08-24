@@ -11,14 +11,13 @@ namespace GksKatowiceBot.Controllers
 {
     public class ThreadClass
     {
-        public async static void SendThreadMessage(DataRow dr,DataTable dtWiadomosci)
+        public async static void SendThreadMessage(DataRow dr,DataTable dtWiadomosci,IList<Attachment> items)
         {
             try
             {
                  //   BaseDB.AddToLog("Wywołanie metody SendThreadMessage");
 
-                    List<IGrouping<string, string>> hrefList = new List<IGrouping<string, string>>();
-                    var items = BaseGETMethod.GetCardsAttachmentsAktualnosci(ref hrefList,false,dtWiadomosci);
+
 
                     string uzytkownik = "";
 

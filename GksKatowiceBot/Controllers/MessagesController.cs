@@ -93,9 +93,9 @@ namespace GksKatowiceBot
                             while (i <= dt.Rows.Count)
                             {
                                 var listaUzytkownikow = dt.AsEnumerable().Skip(i).Take(50).ToList();
-                                Task.Run(() => CreateMessage(listaUzytkownikow, activity.Attachments, activity.Text == null ? "" : activity.Text.Replace("!!!", ""), activity.From.Id));
+                                await Task.Run(() => CreateMessage(listaUzytkownikow, activity.Attachments, activity.Text == null ? "" : activity.Text.Replace("!!!", ""), activity.From.Id));
                                 i += 50;
-                            }                            
+                            }
                         }
 
                     }
@@ -107,11 +107,11 @@ namespace GksKatowiceBot
                         string komenda = "";
                         if (activity.ChannelData != null)
                         {
-                            
+
                             try
                             {
                                 BaseDB.AddToLog("Przesylany Json " + activity.ChannelData.ToString());
-                                var stuff = JsonConvert.DeserializeObject<ClassHelpers.RootObject> (activity.ChannelData.ToString());
+                                var stuff = JsonConvert.DeserializeObject<ClassHelpers.RootObject>(activity.ChannelData.ToString());
                                 //komenda = stuff.message.quick_reply.payload;
                                 komenda = stuff.message.quick_reply.payload;
                                 BaseDB.AddToLog("Komenda: " + komenda);
@@ -1362,7 +1362,7 @@ namespace GksKatowiceBot
                             message.From = botAccount;
                             message.Recipient = userAccount;
                             message.Conversation = new ConversationAccount(id: conversationId.Id);
-                            message.AttachmentLayout = AttachmentLayoutTypes.Carousel;
+                            message.AttachmentLayout = AttachmentLayoutTypes.List;
                             message.Attachments = BaseGETMethod.GetCardsAttachmentsPowitanie();
                             List<IGrouping<string, string>> hrefList = new List<IGrouping<string, string>>();
 
@@ -1833,25 +1833,33 @@ namespace GksKatowiceBot
                             message.From = botAccount;
                             message.Recipient = userAccount;
                             message.Conversation = new ConversationAccount(id: conversationId.Id);
-                            message.AttachmentLayout = AttachmentLayoutTypes.Carousel;
+                            message.AttachmentLayout = AttachmentLayoutTypes.List;
                             message.Attachments = BaseGETMethod.GetCardsAttachmentsPowitanie();
                             List<IGrouping<string, string>> hrefList = new List<IGrouping<string, string>>();
 
                             await connector.Conversations.SendToConversationAsync((Activity)message);
 
-                            Thread.Sleep(100);
-                            message.Text = @"Witaj " + userAccount.Name.Substring(0, userAccount.Name.IndexOf(" ")) + @", jestem asystentem do kontaktu ze stronami internetowymi klubu Skra Bełchatów. Raz dziennie powiadomię Cię o aktualnościach z życia klubu. Ponadto spodziewaj się powiadomień w formie komunikatów, bądź innych informacji przekazywanych przez administratora dotyczących szczególnie ważnych dla kibiców wydarzeń.   
-";
+//                            Thread.Sleep(100);
+//                            message.Text = @"Witaj " + userAccount.Name.Substring(0, userAccount.Name.IndexOf(" ")) + @", jestem asystentem do kontaktu ze stronami internetowymi klubu Skra Bełchatów. Raz dziennie powiadomię Cię o aktualnościach z życia klubu. Ponadto spodziewaj się powiadomień w formie komunikatów, bądź innych informacji przekazywanych przez administratora dotyczących szczególnie ważnych dla kibiców wydarzeń.   
+//";
+//                            message.Attachments = null;
+//                            // message.Attachments = GetCardsAttachments(ref hrefList, true);
+
+//                            await connector.Conversations.SendToConversationAsync((Activity)message);
+
+                   //         await connector.Conversations.SendToConversationAsync((Activity)message);
                             message.Attachments = null;
+                            message.Text = @"Witaj " + userAccount.Name.Substring(0, userAccount.Name.IndexOf(" ")) + @", jestem asystentem do kontaktu ze stronami internetowymi klubu Skra Bełchatów. Raz dziennie powiadomię Cię o aktualnościach z życia klubu. Ponadto spodziewaj się powiadomień w formie komunikatów, bądź innych informacji przekazywanych przez administratora dotyczących szczególnie ważnych dla kibiców wydarzeń.";   
+                            Thread.Sleep(500);
+
                             // message.Attachments = GetCardsAttachments(ref hrefList, true);
 
+                            //await connector.Conversations.SendToConversationAsync((Activity)message);
+
+                            //message.Text = @"Współpraca między nami jest bardzo prosta. Wydajesz mi polecenia, a ja za Ciebie wykonuję całą robotę. Zaznacz tylko w rozwijanym menu lub skorzystaj z podpowiedzi co dokładnie Cię interesuje, a ja automatycznie połączę Cię z aktualnościami. Jeżeli nie chcesz dłużej korzystać z mojej pomocy wyślij wiadomość STOP.
+//";
+
                             await connector.Conversations.SendToConversationAsync((Activity)message);
-
-                            //                            message.Text = @"Współpraca między nami jest bardzo prosta.Wydajesz mi polecenia, a ja za Ciebie wykonuje robotę.
-                            //Zaznacz tylko w rozwijanym menu lub skorzystaj z podpowiedzi, która sekcja cię interesuje, a ja automatycznie połączę Cię z aktualnościami z wybranej sekcji.
-                            //";
-
-                            //                            await connector.Conversations.SendToConversationAsync((Activity)message);
                         }
 
                         else
@@ -1943,7 +1951,6 @@ namespace GksKatowiceBot
                             {
                                 message.Text = "Nie znalazłem informacji pasujących do wpisanego hasła. Wybierz jedną z opcji.";
                             }
-                            // message.Attachments = BaseGETMethod.GetCardsAttachmentsGallery(ref hrefList, true);
 
                             await connector.Conversations.SendToConversationAsync((Activity)message);
                         }
@@ -2055,7 +2062,7 @@ namespace GksKatowiceBot
                             if (fromId != dr["UserId"].ToString())
                             {
 
-                                var userAccount = new ChannelAccount(name: dr["UserName"].ToString(), id:dr["UserId"].ToString());
+                                var userAccount = new ChannelAccount(name: dr["UserName"].ToString(), id: dr["UserId"].ToString());
                                 uzytkownik = userAccount.Name;
                                 var botAccount = new ChannelAccount(name: dr["BotName"].ToString(), id: dr["BotId"].ToString());
                                 var connector = new ConnectorClient(new Uri(dr["Url"].ToString()), "8fa14720-e758-4cc7-82fd-fd6ad145ec90", "oExpuWnvj4oDAQnYHSpVrCJ");
@@ -2141,8 +2148,6 @@ namespace GksKatowiceBot
 
                         message.AttachmentLayout = null;
 
-
-
                         message.Text = dtAnkieta.Rows[0]["Tresc"].ToString();
                         for (int i = 0; i < dt.Rows.Count; i++)
                         {
@@ -2214,22 +2219,6 @@ namespace GksKatowiceBot
                         });
 
                         message.AttachmentLayout = null;
-
-
-
-
-                        //var list = new List<Attachment>();
-                        //if (foto != null)
-                        //{
-                        //    for (int i = 0; i < foto.Count; i++)
-                        //    {
-                        //        list.Add(GetHeroCard(
-                        //       foto[i].ContentUrl, "", "",
-                        //       new CardImage(url: foto[i].ContentUrl),
-                        //       new CardAction(ActionTypes.OpenUrl, "", value: ""),
-                        //       new CardAction(ActionTypes.OpenUrl, "", value: "https://www.facebook.com/sharer/sharer.php?u=" + "")));
-                        //    }
-                        //}
 
                         message.Text = dtAnkieta.Rows[0]["Tresc"].ToString();
                         for (int i = 0; i < dt.Rows.Count; i++)
@@ -2308,22 +2297,6 @@ namespace GksKatowiceBot
                         });
 
                         message.AttachmentLayout = null;
-
-
-
-
-                        //var list = new List<Attachment>();
-                        //if (foto != null)
-                        //{
-                        //    for (int i = 0; i < foto.Count; i++)
-                        //    {
-                        //        list.Add(GetHeroCard(
-                        //       foto[i].ContentUrl, "", "",
-                        //       new CardImage(url: foto[i].ContentUrl),
-                        //       new CardAction(ActionTypes.OpenUrl, "", value: ""),
-                        //       new CardAction(ActionTypes.OpenUrl, "", value: "https://www.facebook.com/sharer/sharer.php?u=" + "")));
-                        //    }
-                        //}
 
                         message.Text = dtAnkieta.Rows[0]["Tresc"].ToString();
                         for (int i = 0; i < dt.Rows.Count; i++)
@@ -2410,22 +2383,6 @@ namespace GksKatowiceBot
 
                         message.AttachmentLayout = null;
 
-
-
-
-                        //var list = new List<Attachment>();
-                        //if (foto != null)
-                        //{
-                        //    for (int i = 0; i < foto.Count; i++)
-                        //    {
-                        //        list.Add(GetHeroCard(
-                        //       foto[i].ContentUrl, "", "",
-                        //       new CardImage(url: foto[i].ContentUrl),
-                        //       new CardAction(ActionTypes.OpenUrl, "", value: ""),
-                        //       new CardAction(ActionTypes.OpenUrl, "", value: "https://www.facebook.com/sharer/sharer.php?u=" + "")));
-                        //    }
-                        //}
-
                         message.Text = dtAnkieta.Rows[0]["Tresc"].ToString();
                         for (int i = 0; i < dt.Rows.Count; i++)
                         {
@@ -2455,105 +2412,105 @@ namespace GksKatowiceBot
                     }
 
 
-                message.AttachmentLayout = null;
+                    message.AttachmentLayout = null;
 
 
-                message.Text = dtAnkieta.Rows[0]["Tresc"].ToString();
-                for (int i = 0; i < dt.Rows.Count; i++)
-                {
-                    try
+                    message.Text = dtAnkieta.Rows[0]["Tresc"].ToString();
+                    for (int i = 0; i < dt.Rows.Count; i++)
                     {
-                        if (fromId != dt.Rows[i]["UserId"].ToString())
+                        try
                         {
+                            if (fromId != dt.Rows[i]["UserId"].ToString())
+                            {
 
-                            var userAccount = new ChannelAccount(name: dt.Rows[i]["UserName"].ToString(), id: dt.Rows[i]["UserId"].ToString());
-                            uzytkownik = userAccount.Name;
-                            var botAccount = new ChannelAccount(name: dt.Rows[i]["BotName"].ToString(), id: dt.Rows[i]["BotId"].ToString());
-                            var connector = new ConnectorClient(new Uri(dt.Rows[i]["Url"].ToString()), "8fa14720-e758-4cc7-82fd-fd6ad145ec90", "oExpuWnvj4oDAQnYHSpVrCJ");
-                            var conversationId = await connector.Conversations.CreateDirectConversationAsync(botAccount, userAccount);
-                            message.From = botAccount;
-                            message.Recipient = userAccount;
-                            message.Conversation = new ConversationAccount(id: conversationId.Id, isGroup: false);
-                            //await connector.Conversations.SendToConversationAsync((Activity)message).ConfigureAwait(false);
+                                var userAccount = new ChannelAccount(name: dt.Rows[i]["UserName"].ToString(), id: dt.Rows[i]["UserId"].ToString());
+                                uzytkownik = userAccount.Name;
+                                var botAccount = new ChannelAccount(name: dt.Rows[i]["BotName"].ToString(), id: dt.Rows[i]["BotId"].ToString());
+                                var connector = new ConnectorClient(new Uri(dt.Rows[i]["Url"].ToString()), "8fa14720-e758-4cc7-82fd-fd6ad145ec90", "oExpuWnvj4oDAQnYHSpVrCJ");
+                                var conversationId = await connector.Conversations.CreateDirectConversationAsync(botAccount, userAccount);
+                                message.From = botAccount;
+                                message.Recipient = userAccount;
+                                message.Conversation = new ConversationAccount(id: conversationId.Id, isGroup: false);
+                                //await connector.Conversations.SendToConversationAsync((Activity)message).ConfigureAwait(false);
 
-                            var returne = await connector.Conversations.SendToConversationAsync((Activity)message);
+                                var returne = await connector.Conversations.SendToConversationAsync((Activity)message);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            BaseDB.AddToLog("Błąd wysyłania wiadomości do: " + uzytkownik + " " + ex.ToString());
                         }
                     }
-                    catch (Exception ex)
-                    {
-                        BaseDB.AddToLog("Błąd wysyłania wiadomości do: " + uzytkownik + " " + ex.ToString());
-                    }
+                }
+                catch (Exception ex)
+                {
+                    BaseDB.AddToLog("Błąd wysyłania wiadomości do: " + uzytkownik + " " + ex.ToString());
                 }
             }
             catch (Exception ex)
             {
-                BaseDB.AddToLog("Błąd wysyłania wiadomości do: " + uzytkownik + " " + ex.ToString());
-            }
-        }
-            catch (Exception ex)
-            {
                 BaseDB.AddToLog("Błąd wysłania wiadomosci: " + ex.ToString());
             }
-}
+        }
 
 
-public static void CallToChildThread()
-{
-    try
-    {
-        Thread.Sleep(5000);
-    }
+        public static void CallToChildThread()
+        {
+            try
+            {
+                Thread.Sleep(5000);
+            }
 
-    catch (ThreadAbortException e)
-    {
-        Console.WriteLine("Thread Abort Exception");
-    }
-    finally
-    {
-        Console.WriteLine("Couldn't catch the Thread Exception");
-    }
-}
-
-
-
+            catch (ThreadAbortException e)
+            {
+                Console.WriteLine("Thread Abort Exception");
+            }
+            finally
+            {
+                Console.WriteLine("Couldn't catch the Thread Exception");
+            }
+        }
 
 
 
-private Activity HandleSystemMessage(Activity message)
-{
-    if (message.Type == ActivityTypes.DeleteUserData)
-    {
-        BaseDB.DeleteUser(message.From.Id);
-    }
-    else
-        if (message.Type == ActivityTypes.ConversationUpdate)
-    {
-    }
-    else
-            if (message.Type == ActivityTypes.ContactRelationUpdate)
-    {
-    }
-    else
-                if (message.Type == ActivityTypes.Typing)
-    {
-        // Handle knowing tha the user is typing
-    }
-    else
-                    if (message.Type == ActivityTypes.Ping)
-    {
-    }
-    else
+
+
+
+        private Activity HandleSystemMessage(Activity message)
+        {
+            if (message.Type == ActivityTypes.DeleteUserData)
+            {
+                BaseDB.DeleteUser(message.From.Id);
+            }
+            else
+                if (message.Type == ActivityTypes.ConversationUpdate)
+            {
+            }
+            else
+                    if (message.Type == ActivityTypes.ContactRelationUpdate)
+            {
+            }
+            else
                         if (message.Type == ActivityTypes.Typing)
-    {
-    }
-    return null;
-}
+            {
+
+            }
+            else
+                            if (message.Type == ActivityTypes.Ping)
+            {
+            }
+            else
+                                if (message.Type == ActivityTypes.Typing)
+            {
+            }
+            return null;
+        }
 
 
-     
 
 
 
-     
+
+
     }
 }
